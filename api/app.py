@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL
 from config import config
@@ -101,8 +102,19 @@ def mixer_product_list():
   cursor = connection_mysql.connection.cursor()
   return functions.product_list_subtype(cursor, var.view_mixer_list)
 
+# product
+@app.route('/product/<sku_code>', methods=['GET'])
+def selected_product(sku_code):
+  cursor = connection_mysql.connection.cursor()
+  return functions.product_list_subtype(
+    cursor,
+    var.view_product_list + ' WHERE sku_code = {}'.format(sku_code)
+  )
+
+#
 
 if __name__ == '__main__':
   app.config.from_object(config['development'])
   app.register_error_handler(404, error404)
   app.run()
+
